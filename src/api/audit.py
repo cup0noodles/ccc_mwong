@@ -18,16 +18,15 @@ def get_inventory():
     potion_count = 0
     current_ml = 0
     with db.engine.begin() as connection:
-        result = connection.execute(sqlalchemy.text("SELECT quantity FROM potion_inventory"))
-        for row in result:
-            potion_count += row[0]
-        result = connection.execute(sqlalchemy.text("SELECT gold, num_red_ml, num_green_ml, num_blue_ml, num_dark_ml FROM global_inventory"))
-        for row in result:
-            current_gold = row[0]
-            current_ml += row[1]
-            current_ml += row[2]
-            current_ml += row[3]
-            current_ml += row[4]
+        result_potions = connection.execute(sqlalchemy.text("SELECT SUM(d_quan) FROM potion_ledger"))
+        result_stock = connection.execute(sqlalchemy.text("SELECT SUM(d_gold), SUM(d_red), SUM(d_green), SUM(d_blue), SUM(d_dark) FROM stock_ledger"))
+    potion_count = result_potions.first()[0]
+    row = result_stock.first()
+    current_gold = row[0]
+    current_ml += row[1]
+    current_ml += row[2]
+    current_ml += row[3]
+    current_ml += row[4]
 
     print(f"Current Stats: Potions-{potion_count}, Stock in mL-{current_ml}, Gold-{current_gold}")
     return {"number_of_potions": potion_count, "ml_in_barrels": current_ml, "gold": current_gold}
