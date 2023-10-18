@@ -57,7 +57,7 @@ def get_bottle_plan():
             potion_inventory.type_green, \
             potion_inventory.type_blue, \
             potion_inventory.type_dark, \
-            SUM(d_quan) \
+            CAST(SUM(d_quan) AS INTEGER) \
             FROM potion_inventory \
             join potion_ledger on potion_ledger.potion_id = potion_inventory.id \
             GROUP BY potion_inventory.id"))
@@ -66,7 +66,7 @@ def get_bottle_plan():
     for potion in inventory:
         stock_dict += [{
             "color": potion[0],
-            "type": potion[2:6],
+            "type": potion[1:5],
             "quantity": potion[5]
         }]
     stock_dict.sort(key=lambda x:x["quantity"]) # sort by least barrels
