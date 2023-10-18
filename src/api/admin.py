@@ -18,9 +18,16 @@ def reset():
     """
     print("Burning shop to the ground...")
     with db.engine.begin() as connection:
-        result = connection.execute(sqlalchemy.text(f"DELETE FROM global_inventory"))
-        result = connection.execute(sqlalchemy.text(f"INSERT INTO global_inventory DEFAULT VALUES"))
-        result = connection.execute(sqlalchemy.text(f"DELETE FROM potion_inventory"))
+        result = connection.execute(sqlalchemy.text(
+            "-- stock \
+            DELETE FROM stock_ledger; \
+            INSERT INTO stock_ledger(d_gold, description) \
+            VALUES (200, 'init'); \
+            -- potions \
+            DELETE FROM potion_ledger; \
+            INSERT INTO potion_ledger(potion_id, description) \
+            SELECT id, 'init' as description \
+            FROM potion_inventory;"))
     return "OK"
 
 
