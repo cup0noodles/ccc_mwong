@@ -16,18 +16,20 @@ def get_catalog():
 
     with db.engine.begin() as connection:
         result = connection.execute(sqlalchemy.text(
-            "SELECT \
-            potion_inventory.sku \
+            "SELECT * FROM \
+            ( \
+            SELECT \
+            potion_inventory.name, \
             potion_inventory.type_red, \
             potion_inventory.type_green, \
             potion_inventory.type_blue, \
             potion_inventory.type_dark, \
-            potion_inventory.cost \
-            potion_inventory.name, \
-            CAST(SUM(d_quan) AS INTEGER) AS total \
+            SUM(d_quan) AS total \
             FROM potion_inventory \
             join potion_ledger on potion_ledger.potion_id = potion_inventory.id \
-            GROUP BY potion_inventory.id"))
+            GROUP BY potion_inventory.id \
+            ) as q \
+            WHERE total > 0"))
     for row in result:
         sku = row[0]
         red = row[1]
@@ -38,16 +40,15 @@ def get_catalog():
         name = row[6]
         quantity = row[7]
         print(f"Catalog contains {quantity} {sku}...")
-        if quantity > 0:
-            return_list += [
-                    {
-                        "sku": sku,
-                        "name": f"{name}",
-                        "quantity": quantity,
-                        "price": cost,
-                        "potion_type": [red,green,blue,dark],
-                    }
-                ]
+        return_list += [
+                {
+                    "sku": sku,
+                    "name": f"{name}",
+                    "quantity": quantity,
+                    "price": cost,
+                    "potion_type": [red,green,blue,dark],
+                }
+            ]
 
         if len(return_list) >= 20:
             break
