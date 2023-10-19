@@ -26,12 +26,12 @@ def update_gold(amount, description=""):
 def update_ml(amount, color, description=""):
     with db.engine.begin() as connection:
         # check if sku exists in table already
+        # i know i know
         result= connection.execute(sqlalchemy.text(
-            "INSERT INTO stock_ledger(:color, description) \
+            f"INSERT INTO stock_ledger(d_{color}, description) \
              VALUES (:amount, :description)"),
                 [{
                     'amount':amount,
-                    'color':"d_"+color,
                     'description':description,
 
                 }]
