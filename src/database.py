@@ -27,11 +27,11 @@ def update_ml(amount, color, description=""):
     with db.engine.begin() as connection:
         # check if sku exists in table already
         result= connection.execute(sqlalchemy.text(
-            "INSERT INTO stock_ledger(d_:color, description) \
+            "INSERT INTO stock_ledger(:color, description) \
              VALUES (:amount, :description)"),
                 [{
                     'amount':amount,
-                    'color':color,
+                    'color':"d_"+color,
                     'description':description,
 
                 }]
@@ -76,10 +76,10 @@ def get_ml(color):
     with db.engine.begin() as connection:
         # check if sku exists in table already
         result = connection.execute(sqlalchemy.text(
-            "SELECT SUM(d_:color) as ml \
+            "SELECT SUM(:color) as ml \
              FROM stock_ledger"),
              [{
-                 'color':color
+                 'color':"d_" + color
              }])
     return result.first()[0]
 
