@@ -117,9 +117,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     
     current_ml = db.get_all_ml()
 
-    NUM_GOLD = db.get_gold()
+    NUM_GOLD = int(db.get_gold())
     gold_left = NUM_GOLD
-    total_stock = [x + cml for x, cml in zip(total_stock, current_ml[:-1])]
+    total_stock = [x + int(cml) for x, cml in zip(total_stock, current_ml)]
 
     # create list of priority to purchase
     potion_stock = [
@@ -138,6 +138,13 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     # -- Build Purchase Plan -- 
     #----------------------------------
     print("Constructing plan...")
+    
+    # set minimum based on current gold
+    if NUM_GOLD < 250:
+        min_bar = 100
+    else:
+        min_bar = 250
+
     purchase_plan = []
     # go down colors by priority
     for potion_type in potion_stock:
@@ -147,7 +154,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         for barrel in wholesale_catalog:
             if color in barrel.sku:
                 # barrel is now being checked, remove from catalog
-                if ("MINI" in barrel.sku or "SMALL" in barrel.sku) and color != "DARK":
+                if ("MINI" in barrel.sku) and color != "DARK":
                     continue
                 else:
                     barrels_of_color += [barrel]
@@ -155,10 +162,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         
         # sort by largest since those are best value for money
         # want to spend 50% of current gold, or 100, whichever is more
-        max_spend = min(gold_left, max((NUM_GOLD)//2, 250))
+        max_spend = min(gold_left, max((NUM_GOLD)//2, min_bar))
         print(f"Max Spend is {max_spend}")
-        if max_spend < 250:
-           
+        if max_spend < 100:
             # dont buy smaller than medium
             break
         barrels_of_color.sort(key=lambda x:x.ml_per_barrel, reverse=True)

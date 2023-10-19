@@ -22,7 +22,7 @@ def reset():
             "-- stock \
             DELETE FROM stock_ledger; \
             INSERT INTO stock_ledger(d_gold, description) \
-            VALUES (200, 'init'); \
+            VALUES (100, 'init'); \
             -- potions \
             DELETE FROM potion_ledger; \
             INSERT INTO potion_ledger(potion_id, description) \

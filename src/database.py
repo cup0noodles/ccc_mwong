@@ -87,6 +87,6 @@ def get_all_ml():
     with db.engine.begin() as connection:
         # check if sku exists in table already
         result = connection.execute(sqlalchemy.text(
-            "SELECT SUM(d_red) as red, SUM(d_green) as green, SUM(d_blue) as blue, SUM(d_dark) as dark \
+            "SELECT SUM(d_red), SUM(d_green), SUM(d_blue), SUM(d_dark) \
              FROM stock_ledger"))
     return result.first()
