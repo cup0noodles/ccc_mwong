@@ -19,12 +19,14 @@ def get_catalog():
             "SELECT * FROM \
             ( \
             SELECT \
-            potion_inventory.name, \
+            potion_inventory.sku, \
             potion_inventory.type_red, \
             potion_inventory.type_green, \
             potion_inventory.type_blue, \
             potion_inventory.type_dark, \
-            SUM(d_quan) AS total \
+            potion_inventory.cost, \
+            SUM(d_quan) AS total, \
+            potion_inventory.name \
             FROM potion_inventory \
             join potion_ledger on potion_ledger.potion_id = potion_inventory.id \
             GROUP BY potion_inventory.id \
@@ -36,9 +38,9 @@ def get_catalog():
         green = row[2]
         blue = row[3]
         dark = row[4]
-        cost = row[5]
-        name = row[6]
-        quantity = row[7]
+        cost = int(row[5])
+        quantity = row[6]
+        name = row[7]
         print(f"Catalog contains {quantity} {sku}...")
         return_list += [
                 {
