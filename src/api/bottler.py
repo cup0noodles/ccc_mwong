@@ -28,11 +28,14 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
         
         p_id = db.get_potion_id(sku)
         db.update_potion(count, p_id, f"Delivery of {count} {sku}")
-
-        db.update_ml(-order.potion_type[0]*count, 'red', f"Delivery of {count} {sku}")
-        db.update_ml(-order.potion_type[1]*count, 'green', f"Delivery of {count} {sku}")
-        db.update_ml(-order.potion_type[2]*count, 'blue', f"Delivery of {count} {sku}")
-        db.update_ml(-order.potion_type[3]*count, 'dark', f"Delivery of {count} {sku}")
+        if order.potion_type[0]:
+            db.update_ml(-order.potion_type[0]*count, 'red', f"Delivery of {count} {sku}")
+        if order.potion_type[1]:
+            db.update_ml(-order.potion_type[1]*count, 'green', f"Delivery of {count} {sku}")
+        if order.potion_type[2]:
+            db.update_ml(-order.potion_type[2]*count, 'blue', f"Delivery of {count} {sku}")
+        if order.potion_type[3]:
+            db.update_ml(-order.potion_type[3]*count, 'dark', f"Delivery of {count} {sku}")
         
         print(f"Sucessfully delivered {count} {sku} potions.")
 
