@@ -94,7 +94,7 @@ def get_bottle_plan():
             potion_type = potion["type"]
             # Figure out how much stock it would require
             ml_rq = [ml*num_req for ml in potion_type]
-            max_potion = target_stock
+            max_potion = num_req
             # Determine limiting factor, target stock is default cap
             for i in range(len(ml_rq)):
                 if ml_rq[i] != 0:
