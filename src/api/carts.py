@@ -74,10 +74,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                 'description':f"Checkout Cart {cart_id} with payment {cart_checkout.payment}",
                 'cart_id':cart_id
             }])
-    total_cost = result.first()[0]
-    
-    with db.engine.begin() as connection:
-        result= connection.execute(sqlalchemy.text(
+        result_pot= connection.execute(sqlalchemy.text(
             "INSERT into potion_ledger (d_quan, potion_id, description) \
             SELECT (-1*carts_transactions.quantity) as d_quan, potion_inventory.id as potion_id, :description as description \
             FROM carts_transactions \
@@ -88,9 +85,10 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                 'description':f"Checkout Cart {cart_id}",
                 'cart_id':cart_id
             }])
-    for row in result:
+    total_cost = result.first()[0]
+        
+    for row in result_pot:
         total_quantity += (-1)*row[0]
-
 
     print(f"Cart ID {cart_id} purchased {total_quantity} potions and paid {total_cost} gold")
 
