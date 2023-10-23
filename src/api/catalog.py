@@ -52,7 +52,7 @@ def get_catalog():
                 }
             ]
 
-        if len(return_list) >= 20:
+        if len(return_list) >= 6:
             break
     print("Current Catalog:")
     print(return_list)
