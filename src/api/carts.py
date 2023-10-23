@@ -72,7 +72,6 @@ def search_orders(
 class NewCart(BaseModel):
     customer: str
 
-# TODO impliment multicolor and new cart system
 @router.post("/")
 def create_cart(new_cart: NewCart):
     """ """
@@ -117,7 +116,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     
     # update gold
     with db.engine.begin() as connection:
-        result= connection.execute(sqlalchemy.text(
+        result = connection.execute(sqlalchemy.text(
             "INSERT INTO stock_ledger (d_gold, description) \
             SELECT d_gold, :description as description \
             FROM \
@@ -133,7 +132,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                 'description':f"Checkout Cart {cart_id} with payment {cart_checkout.payment}",
                 'cart_id':cart_id
             }])
-        result_pot= connection.execute(sqlalchemy.text(
+        result_pot = connection.execute(sqlalchemy.text(
             "INSERT into potion_ledger (d_quan, potion_id, description) \
             SELECT (-1*carts_transactions.quantity) as d_quan, potion_inventory.id as potion_id, :description as description \
             FROM carts_transactions \
@@ -144,10 +143,11 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                 'description':f"Checkout Cart {cart_id}",
                 'cart_id':cart_id
             }])
-    total_cost = result.first()[0]
+        total_cost = result.first()[0]
         
-    for row in result_pot:
-        total_quantity += (-1)*row[0]
+        for row in result_pot:
+            total_quantity += (-1)*row[0]
+    
 
     print(f"Cart ID {cart_id} purchased {total_quantity} potions and paid {total_cost} gold")
 
