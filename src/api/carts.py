@@ -53,19 +53,55 @@ def search_orders(
     Your results must be paginated, the max results you can return at any
     time is 5 total line items.
     """
-
+    field_dict = {
+        "customer_name":"customer_name",
+        "item_sku":"sku",
+        "line_item_total":"gold",
+        "timestamp":"time"
+    }
+    full_results = []
+    with db.engine.begin() as connection:
+        result = connection.execute(sqlalchemy.text(
+            f"SELECT \
+                carts_transactions.id as unique_id, \
+                carts.customer_name, \
+                potion_inventory.sku, \
+                carts_transactions.quantity, \
+                potion_inventory.cost * carts_transactions.quantity as gold, \
+                carts.created_at as time \
+                FROM \
+                    carts \
+                    JOIN carts_transactions ON carts.cart_id = carts_transactions.cart_id \
+                    JOIN potion_inventory ON carts_transactions.sku = potion_inventory.sku \
+                    WHERE potion_inventory.sku like :sku and customer_name like :customer \
+                    ORDER BY {field_dict.get(sort_col)} {sort_order.name}"),
+                    [
+                        {
+                            "sku":f"%{potion_sku}%",
+                            "customer":f"%{customer_name}%",
+                        }
+                    ]
+                    )
+        for row in result:
+            full_results += [{
+                "line_item_id": row.unique_id,
+                "item_sku": f"{row.quantity} {row.sku}",
+                "customer_name": row.customer_name,
+                "line_item_total": row.gold,
+                "timestamp": row.time,
+            }]
+    page = int(search_page)
+    total = len(full_results)
+    prev_start = max(5*(page-2),0)
+    prev_end = max(5*(page-1) - 1,0)
+    current_start = 5*(page-1)
+    current_end = min(5*page -1, total)
+    next_start = min(5*page, total)
+    next_end = min(5*(page+1) -1, total)
     return {
-        "previous": "",
-        "next": "",
-        "results": [
-            {
-                "line_item_id": 1,
-                "item_sku": "1 oblivion potion",
-                "customer_name": "Scaramouche",
-                "line_item_total": 50,
-                "timestamp": "2021-01-01T00:00:00Z",
-            }
-        ],
+        "previous": full_results[prev_start:prev_end],
+        "next": full_results[next_start:next_end],
+        "results": full_results[current_start:current_end],
     }
 
 
