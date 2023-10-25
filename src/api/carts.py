@@ -94,11 +94,11 @@ def search_orders(
         search_page = "1"
     page = int(search_page)
     total = len(full_results)
-    prev_start = max(5*(page-2) + 1,0)
-    prev_end = max(5*(page-1),0)
-    current_start = 5*(page)
+    prev_start = max(6*(page-2),0)
+    prev_end = max(6*(page-1),0)
+    current_start = 6*(page-1)
     current_end = min(5*page, total)
-    next_start = min(5*page + 1, total)
+    next_start = min(5*page, total)
     next_end = min(5*(page+1), total)
     return {
         "previous": full_results[prev_start:prev_end],
