@@ -90,6 +90,8 @@ def search_orders(
                 "line_item_total": row.gold,
                 "timestamp": row.time,
             }]
+    if search_page == "":
+        search_page = "1"
     page = int(search_page)
     total = len(full_results)
     prev_start = max(5*(page-2),0)
