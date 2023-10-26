@@ -108,13 +108,11 @@ def search_orders(
         prev_str = ""
     else:
         prev_str = str(prev_page)
-    prev_str = ""
 
     if next_page == page:
         next_str = ""
     else:
         next_str = str(next_page)
-    next_str = ""
 
     return {
         "previous": prev_str,
