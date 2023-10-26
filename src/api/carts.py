@@ -101,8 +101,8 @@ def search_orders(
     next_start = min(5*page, total)
     next_end = min(5*(page+1), total)
     return {
-        "previous": full_results[prev_start:prev_end],
-        "next": full_results[next_start:next_end],
+        "previous": "",
+        "next": "",
         "results": full_results[current_start:current_end],
     }
 
