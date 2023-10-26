@@ -4,6 +4,7 @@ from src.api import auth
 import sqlalchemy
 from src import database as db
 from enum import Enum
+import math
 
 router = APIRouter(
     prefix="/carts",
@@ -91,19 +92,34 @@ def search_orders(
                 "timestamp": row.time,
             }]
     if search_page == "":
-        search_page = "1"
-    page = int(search_page)
+        page = 1
+    else:
+        page = int(search_page)
     total = len(full_results)
-    prev_start = max(6*(page-2),0)
-    prev_end = max(6*(page-1),0)
-    current_start = 6*(page-1)
-    current_end = min(5*page, total)
-    next_start = min(5*page, total)
-    next_end = min(5*(page+1), total)
+    max_page = math.ceil(total / 5)
+
+    current = 6*(page-1)
+    next = min(5*page, total)
+
+    prev_page = max(page - 1,1)
+    next_page = min(page + 1, max_page)
+
+    if prev_page == page:
+        prev_str = ""
+    else:
+        prev_str = str(prev_page)
+    prev_str = ""
+
+    if next_page == page:
+        next_str = ""
+    else:
+        next_str = str(next_page)
+    next_str = ""
+
     return {
-        "previous": full_results[prev_start:prev_end],
-        "next": full_results[next_start:next_end],
-        "results": full_results[current_start:current_end],
+        "previous": prev_str,
+        "next": next_str,
+        "results": full_results[current:next],
     }
 
 
