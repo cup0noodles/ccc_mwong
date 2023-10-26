@@ -91,7 +91,7 @@ def search_orders(
                 "line_item_total": row.gold,
                 "timestamp": row.time,
             }]
-    if search_page == "":
+    if search_page == "" or search_page == "1":
         page = 1
     else:
         page = int(search_page)
