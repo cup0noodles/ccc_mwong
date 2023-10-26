@@ -4,10 +4,10 @@ import os
 import dotenv
 
 dotenv.load_dotenv()
-DEMO_KEY = "demo-key"
+DEMO_KEY = "r8j*%GCsx3Fk7S"
 
 api_keys = [
-    DEMO_KEY,
+    #DEMO_KEY,
 ]  # This is encrypted in the database
 
 api_keys.append(os.environ.get("API_KEY"))
