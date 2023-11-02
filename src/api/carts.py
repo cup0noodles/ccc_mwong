@@ -98,7 +98,7 @@ def search_orders(
     total = len(full_results)
     max_page = math.ceil(total / 5)
 
-    current = 6*(5*page-1)
+    current = (5*(page-1))
     next = min(5*page, total)
 
     prev_page = max(page - 1,1)
