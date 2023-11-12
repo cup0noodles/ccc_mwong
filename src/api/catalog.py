@@ -31,7 +31,7 @@ def get_catalog():
             join potion_ledger on potion_ledger.potion_id = potion_inventory.id \
             GROUP BY potion_inventory.id \
             ) as q \
-            WHERE total > 0 \
+            WHERE total > 0 AND sku != 'null'\
             ORDER BY total desc"))
     for row in result:
         sku = row[0]
