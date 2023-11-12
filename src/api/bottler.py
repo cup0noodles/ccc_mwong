@@ -63,7 +63,7 @@ def get_bottle_plan():
             CAST(SUM(d_quan) AS INTEGER) \
             FROM potion_inventory \
             join potion_ledger on potion_ledger.potion_id = potion_inventory.id \
-            WHERE sku != 'null \
+            WHERE sku != 'null' \
             GROUP BY potion_inventory.id"))
     inventory = result_potions.all()
     stock_dict = []
