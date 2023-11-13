@@ -75,7 +75,7 @@ def get_bottle_plan():
         }]
     stock_dict.sort(key=lambda x:x["quantity"]) # sort by least barrels
     # Determine potion needs
-    target_stock = 30
+    target_stock = 20
     request_list = []
     total_need = [0,0,0,0]
     for potion in stock_dict:
